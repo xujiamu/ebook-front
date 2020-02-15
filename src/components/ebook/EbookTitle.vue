@@ -44,7 +44,7 @@ export default {
   box-shadow: 0 px2rem(8) px2rem(8) rgba(0, 0, 0, 0.15);
   background-color: rgb(255, 255, 255);
   display: flex;
-  z-index: 101;
+  z-index: 200;
   font-size: px2rem(20);
   .left {
     flex: 0 0 px2rem(60);

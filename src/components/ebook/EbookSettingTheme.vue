@@ -46,7 +46,7 @@ export default {
   height: px2rem(80);
   box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
   background-color: rgb(255, 255, 255);
-  z-index: 100;
+  z-index: 190;
   .setting-theme {
     display: flex;
     height: 100%;
