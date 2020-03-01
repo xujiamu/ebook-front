@@ -94,10 +94,9 @@ const messages = {
     startDownload: 'Start download...',
     progressDownload: 'Downloading：$1',
     downloadFirst: 'Please download book first',
-    welcome: 'Welcome to visit iMooc<br>Learning "Practical WeChat Reading - Enterprise Web Book Store of Amami Native APP"<br>--------  Author: Sam  --------',
+    welcome: 'Welcome to visit etherealize book store<br>A free reading site for Ebub books<br>--------  Author: Mu  --------',
     find: 'Go to book store',
-    changeLanguage: 'Change Language',
-    studyNow: 'Learn on imooc.com'
+    changeLanguage: 'Change Language'
   },
   detail: {
     copyright: 'Copyright',

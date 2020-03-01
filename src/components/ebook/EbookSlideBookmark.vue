@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import Scroll from '../common/Scroll'
 import { getBookmark } from '../../utils/localStorage'
 import ebookMixin from '../../utils/mixin'

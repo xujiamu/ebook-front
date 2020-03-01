@@ -40,11 +40,6 @@ export default {
   updated() {
     this.updateProgressBackground()
   },
-  computed: {
-    getSectionName() {
-      return this.section ? this.navigation[this.section].label : ''
-    }
-  },
   methods: {
     // 进度条拖动松手时调用的方法
     onProgressChange(progress) {
@@ -131,8 +126,16 @@ export default {
         &:focus {
           outline: none
         }
-        &::-webkit-slider-thumb,&::-moz-range-thumb {
+        &::-webkit-slider-thumb {
           -webkit-appearance: none;
+          height: px2rem(20);
+          width: px2rem(20);
+          border-radius: 50%;
+          background: white;
+          box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .15);
+          border: px2rem(1) solid #ddd;
+        }
+        &::-moz-range-thumb {
           -moz-appearance: none;
           height: px2rem(20);
           width: px2rem(20);

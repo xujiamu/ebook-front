@@ -1,4 +1,5 @@
 <template>
+  <!--.passive 代表滚动行为立即触发，不会等待onScroll（滚动事件）完成，可以提高移动端性能-->
   <div class="scroll-wrapper" :class="{'no-scroll': ifNoScroll}" @scroll.passive="handleScroll" ref="scrollWrapper">
     <slot></slot>
   </div>
