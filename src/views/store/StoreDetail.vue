@@ -73,18 +73,21 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import DetailTitle from '../../components/detail/DetaiTitle'
 import BookInfo from '../../components/detail/BookInfo'
 import Scroll from '../../components/common/Scroll'
 import Toast from '../../components/common/Toast'
 import { detail } from '../../api/store'
 import { px2rem, realPx } from '../../utils/utils'
+import { getLocalForage } from '../../utils/localForage'
+import { storeHomeMixin } from '../../utils/mixin'
 import Epub from 'epubjs'
 
 global.ePub = Epub
 
 export default {
+  mixins: [storeHomeMixin],
   components: {
     DetailTitle,
     Scroll,
@@ -165,7 +168,30 @@ export default {
         path: `/ebook/${this.categoryText}|${this.fileName}`
       })
     },
+    // （trialListening)试听 跳转到听书页
     trialListening() {
+      // 获取IndexDB中的电子书，之后执行回调
+      getLocalForage(this.bookItem.fileName, (err, blob) => {
+        // 如果无报错，且二进制数据存在
+        if (!err && blob && blob instanceof Blob) {
+          // 则离线解析，进行路由跳转，并传递书名
+          this.$router.push({
+            path: '/store/speaking',
+            query: {
+              fileName: this.bookItem.fileName
+            }
+          })
+        } else {
+          // 反之则在线解析，进行路由跳转，并传递书名
+          this.$router.push({
+            path: '/store/speaking',
+            query: {
+              fileName: this.bookItem.fileName,
+              opf: this.opf
+            }
+          })
+        }
+      })
     },
     read(item) {
       this.$router.push({
@@ -222,7 +248,6 @@ export default {
         detail({
           fileName: this.fileName
         }).then(response => {
-          console.log(response.data)
           if (response.status === 200 && response.data.error_code === 0 && response.data.data) {
             const data = response.data.data
             this.bookItem = data
@@ -245,6 +270,7 @@ export default {
       }
     },
     back() {
+      this.setFlipCardVisible(false)
       this.$router.back()
     },
     display(location) {

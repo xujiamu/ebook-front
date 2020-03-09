@@ -1,12 +1,20 @@
 import axios from 'axios'
 import { setLocalForage } from '../utils/localForage'
 
+export function flatList() {
+  return axios({
+    method: 'get',
+    url: `${process.env.VUE_APP_BOOK_URL}/book/flat-list`
+  })
+}
+
 export function home() {
   return axios({
     methods: 'get',
     url: `${process.env.VUE_APP_BASE_URL}/book/home`
   })
 }
+
 export function detail (book) {
   return axios({
     method: 'get',
@@ -64,7 +72,6 @@ export function download (book, onSuccess, onError, onProgress) {
         if (onError) onError(err)
       })
     }).catch(err => {
-      console.log(err)
       // 如果数据请求失败，捕获异常，并执行回调
       if (onError) onError(err)
     })
