@@ -23,6 +23,7 @@ import { saveFontSize,
   saveTheme,
   getLocation } from '../../utils/localStorage'
 import { flatten } from '../../utils/book'
+import { getLocalForage } from '../../utils/localForage'
 
 export default {
   mixins: [ebookMixin],
@@ -246,8 +247,23 @@ export default {
     }
   },
   mounted () {
-    this.setFileName(this.$route.params.fileName.split('|').join('/')).then(() => {
-      this.initEpub(`${process.env.VUE_APP_RES_URL}/epub/${this.fileName}.epub`)
+    // 获取路由中的filterName值
+    const books = this.$route.params.fileName.split('|')
+    // 获取书名，第0个元素是分类名
+    const fileName = books[1]
+    // 根据书名向indexDB中查找
+    getLocalForage(fileName, (err, blob) => {
+      if (!err && blob) {
+        // 如果数据库存在指定图书数据，则在保存fileName变量后，初始化电子书
+        this.setFileName(books.join('/')).then(() => {
+          this.initEpub(blob)
+        })
+      } else {
+        // 不存在则在线下载
+        this.setFileName(this.$route.params.fileName.split('|').join('/')).then(() => {
+          this.initEpub(`${process.env.VUE_APP_RES_URL}/epub/${this.fileName}.epub`)
+        })
+      }
     })
   }
 }

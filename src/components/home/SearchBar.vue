@@ -22,7 +22,8 @@
                  class="input"
                  :placeholder="$t('home.hint')"
                  v-model="searchText"
-                 @click="showHotSearch">
+                 @click="showHotSearch"
+                 @keyup.enter.exact="search">
         </div>
       </div>
     </div>
@@ -64,11 +65,24 @@ export default {
     }
   },
   methods: {
+    search() {
+      // 根据输入内容，进行路由跳转
+      this.$router.push({
+        path: '/store/list',
+        query: {
+          keyword: this.searchText
+        }
+      })
+    },
     showFlipCard() {
       this.setFlipCardVisible(true)
     },
     back() {
-      this.hideHotSearch()
+      if (this.hotSearchVisible) {
+        this.hideHotSearch()
+      } else {
+        this.$router.push('/store/shelf')
+      }
     },
     showHotSearch() {
       this.hideTitle()

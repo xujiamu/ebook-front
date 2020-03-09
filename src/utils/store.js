@@ -1,3 +1,4 @@
+// 翻转卡配置数据
 export const flipCardList = [
   {
     r: 255,
@@ -55,6 +56,31 @@ export const flipCardList = [
     rotateDegree: 0
   }
 ]
+// 图书类别与数字的映射
+export const categoryList = {
+  'ComputerScience': 1,
+  'SocialSciences': 2,
+  'Economics': 3,
+  'Education': 4,
+  'Engineering': 5,
+  'Environment': 6,
+  'Geography': 7,
+  'History': 8,
+  'Laws': 9,
+  'LifeSciences': 10,
+  'Literature': 11,
+  'Biomedicine': 12,
+  'BusinessandManagement': 13,
+  'EarthSciences': 14,
+  'MaterialsScience': 15,
+  'Mathematics': 16,
+  'MedicineAndPublicHealth': 17,
+  'Philosophy': 18,
+  'Physics': 19,
+  'PoliticalScienceAndInternationalRelations': 20,
+  'Psychology': 21,
+  'Statistics': 22
+}
 
 export function getCategoryName(id) {
   switch (id) {
@@ -152,4 +178,49 @@ export function categoryText(category, vue) {
     case 22:
       return vue.$t('category.statistics')
   }
+}
+// 对列表的id进行更新
+export function computeId(list) {
+  return list.map((book, index) => {
+  //  id从1开始计算 等于3时ID永远为-1
+    if (book.type !== 3) {
+      book.id = index + 1
+      // 对于分组，同样需要更新id
+      if (book.itemList) {
+        // 递归调用computeId方法
+        book.itemList = computeId(book.itemList)
+      }
+    }
+    return book
+  })
+}
+// 添加add数据(类型为3的数据，对应书架中显示的添加图书一栏)
+export function appendAddToShelf(list) {
+  list.push({
+    id: -1,
+    type: 3
+  })
+  return list
+}
+// 删除add数据
+export function removeAddFromShelf(list) {
+  return list.filter(item => item.type !== 3)
+}
+// 跳转到书城首页,需要传入vue实例
+export function gotoStoreHome(vue) {
+  // 使用vueRouter push方法进行路由跳转
+  vue.$router.push({
+    path: '/store/home'
+  })
+}
+
+// 跳转到详情页
+export function gotoBookDetail(vue, book) {
+  vue.$router.push({
+    path: '/store/detail',
+    query: {
+      fileName: book.fileName,
+      category: book.categoryText
+    }
+  })
 }
