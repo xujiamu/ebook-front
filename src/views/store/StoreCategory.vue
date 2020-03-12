@@ -45,8 +45,10 @@ export default {
       this.scrollBottom = isEditMode ? 48 : 0
       // 等待dom更新完毕后
       this.$nextTick(() => {
-        // 对滚动条做出刷新
-        this.$refs.scroll.refresh()
+        if (this.$refs.scroll) {
+          // 对滚动条做出刷新
+          this.$refs.scroll.refresh()
+        }
       })
     }
   },

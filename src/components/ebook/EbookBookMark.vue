@@ -80,12 +80,11 @@ export default {
       if (!this.bookmark) {
         this.bookmark = []
       }
-      const currentLocation = this.currentBook.rendition.currentLocation()
+      const currentLocation = this.currentBook.rendition.currentLocation ? this.currentBook.rendition.currentLocation() : ''
       const cfibase = currentLocation.start.cfi.replace(/!.*/, '')
       const cfistart = currentLocation.start.cfi.replace(/.*!/, '').replace(/\)$/, '')
       const cfiend = currentLocation.end.cfi.replace(/.*!/, '').replace(/\)$/, '')
       const cfirange = `${cfibase}!,${cfistart},${cfiend})`
-      console.log(currentLocation.start.cfi, 222)
       this.currentBook.getRange(cfirange).then(range => {
         let text = range.toString().replace(/\s\s/, '')
         this.bookmark.push({
@@ -96,7 +95,7 @@ export default {
       })
     },
     removeBookmark() {
-      const currentLocation = this.currentBook.rendition.currentLocation()
+      const currentLocation = this.currentBook.rendition.currentLocation ? this.currentBook.rendition.currentLocation() : ''
       const cfi = currentLocation.start.cfi
       this.bookmark = getBookmark(this.fileName)
       if (this.bookmark) {

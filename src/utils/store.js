@@ -1,4 +1,34 @@
-import { getLocalStorage } from './localStorage'
+import { getLocalStorage, getBookShelf, saveBookShelf } from './localStorage'
+
+export function removeFromBookShelf(book) {
+  // 得到本地存储中的所有图书，将其与当前book进行比较，相同图书被过滤掉
+  return getBookShelf().filter(item => {
+    if (item.itemList) {
+      // 如果是分组则递归分组
+      item.itemList = item.itemList.filter(subItem => {
+        return subItem.fileName !== book.fileName
+      })
+    }
+    return item.fileName !== book.fileName
+  })
+}
+
+export function addToShelf (book) {
+  // 得到本地存储中的图书列表
+  let shelfList = getBookShelf()
+  // 删除列表最后的 加
+  shelfList = removeAddFromShelf(shelfList)
+  // 将传入的图书对象 类型设为1
+  book.type = 1
+  // 将其放到列表的最后
+  shelfList.push(book)
+  // 重新计算列表id
+  shelfList = computeId(shelfList)
+  // 把 加 添加回来
+  shelfList = appendAddToShelf(shelfList)
+  // 保存图书列表到本地存储
+  saveBookShelf(shelfList)
+}
 
 export function flatBookList(bookList) {
   if (bookList) {

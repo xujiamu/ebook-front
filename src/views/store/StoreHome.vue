@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       random: null,
-      banner: null,
+      banner: '',
       gussYouLike: null,
       recommend: null,
       featured: null,

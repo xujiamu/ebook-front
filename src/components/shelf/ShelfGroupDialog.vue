@@ -171,9 +171,12 @@ export default {
           group.itemList.forEach((item, index) => {
             item.id = index + 1
           })
+          // 保存数据列表到本地存储
+          saveBookShelf(this.shelfList)
+          // 关闭修改模式
+          this.setIsEditMode(false)
           // 显示弹窗
           this.simpleToast(this.$t('shelf.moveBookInSuccess').replace('$1', group.title))
-          // 调用通用方法
           this.onComplete()
         })
     },

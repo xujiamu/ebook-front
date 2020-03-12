@@ -62,7 +62,7 @@ export const storeShelfMixin = {
         this.setShelfCategory(categoryList)
       })
     },
-    moveOutOfGroup (f) {
+    async moveOutOfGroup (f) {
       // 保存图书列表
       this.setShelfList(
         // 遍历图书列表
@@ -75,6 +75,7 @@ export const storeShelfMixin = {
           // 返回新的book元素
           return book
         })).then(() => {
+        /*
         //  删除书架中 加 元素，并返回更改后的列表
         let list = removeAddFromShelf(this.shelfList)
         // 将选中的图书与列表合并，得到新列表
@@ -83,11 +84,24 @@ export const storeShelfMixin = {
         list = appendAddToShelf(list)
         // 更新id
         list = computeId(list)
+        console.log(list)
         // 保存到vuex
         this.setShelfList(list).then(() => {
+          console.log(this.shelfList)
+          // 保存数据列表到本地存储
+          saveBookShelf(this.shelfList)
+          // 关闭修改模式
+          this.setIsEditMode(false)
           // 弹出消息框
           this.simpleToast(this.$t('shelf.moveBookOutSuccess'))
           // 如果回调存在，则调用
+          if (f) f()
+        })
+        */
+        const list = computeId(appendAddToShelf([].concat(
+          removeAddFromShelf(this.shelfList), ...this.shelfSelected)))
+        this.setShelfList(list).then(() => {
+          this.simpleToast(this.$t('shelf.moveBookOutSuccess'))
           if (f) f()
         })
       })

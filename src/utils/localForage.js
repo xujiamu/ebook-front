@@ -41,9 +41,9 @@ export function lengthLocalForage(cb) {
   localForage.length().then(
     numberOfKeys => {
       if (cb) cb(numberOfKeys)
-      console.log(numberOfKeys)
     }).catch(function(err) {
-    console.log(err)
+    if (err) {}
+    // console.log(err)
   })
 }
 // 封装遍历数据库的方法
@@ -51,13 +51,14 @@ export function iteratorLocalForage() {
   // 调用localForage中的iterate Api
   localForage.iterate(function(value, key, iterationNumber) {
     // 打印每一个key，value
-    console.log([key, value])
+    // console.log([key, value])
   }).then(function() {
     // 遍历结束后无错误打印该行
-    console.log('Iteration has completed')
+    // console.log('Iteration has completed')
   }).catch(function(err) {
     // 遍历过程中有错，打印该行
-    console.log(err)
+    if (err) {}
+    // console.log(err)
   })
 }
 // 判断是否support(支持) indexDB数据库，如果不支持，则返回false

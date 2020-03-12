@@ -170,16 +170,18 @@ export default {
     },
     prevPage() {
       if (this.rendition) {
-        this.rendition.prev()
+        this.rendition.prev().then(() => {
+          this.refreshLocation()
+        })
         this.hideTitleAndMenu()
-        this.refreshLocation()
       }
     },
     nextPage() {
       if (this.rendition) {
-        this.rendition.next()
+        this.rendition.next().then(() => {
+          this.refreshLocation()
+        })
         this.hideTitleAndMenu()
-        this.refreshLocation()
       }
     },
     toggleTitleAndMenu() {
@@ -225,9 +227,11 @@ export default {
           const loc = item.match(/\[(.*)\]!/)[1]
           this.navigation.forEach(nav => {
             if (nav.href) {
-              const href = nav.href.match(/^(.*)\.html$/)[1]
-              if (href === loc) {
-                nav.pagelist.push(item)
+              const href = nav.href.match(/^(.*)\.html$/)
+              if (href) {
+                if (href[1] === loc) {
+                  nav.pagelist.push(item)
+                }
               }
             }
           })
@@ -261,7 +265,7 @@ export default {
       } else {
         // 不存在则在线下载
         this.setFileName(this.$route.params.fileName.split('|').join('/')).then(() => {
-          this.initEpub(`${process.env.VUE_APP_RES_URL}/epub/${this.fileName}.epub`)
+          this.initEpub(`${process.env.VUE_APP_EPUB_URL}/${this.fileName}.epub`)
         })
       }
     })

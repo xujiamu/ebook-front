@@ -65,6 +65,7 @@
       <div class="bottom-btn" @click.stop.prevent="readBook()">{{$t('detail.read')}}</div>
       <div class="bottom-btn" @click.stop.prevent="trialListening()">{{$t('detail.listen')}}</div>
       <div class="bottom-btn" @click.stop.prevent="addOrRemoveShelf()">
+        <!-- 根据是否在书架列表中的计算属性，来决定展示的文字和图标 -->
         <span class="icon-check" v-if="inBookShelf"></span>
         {{inBookShelf ? $t('detail.isAddedToShelf') : $t('detail.addOrRemoveShelf')}}
       </div>
@@ -81,13 +82,16 @@ import Toast from '../../components/common/Toast'
 import { detail } from '../../api/store'
 import { px2rem, realPx } from '../../utils/utils'
 import { getLocalForage } from '../../utils/localForage'
-import { storeHomeMixin } from '../../utils/mixin'
+// 这里使用了两个混入一个用于获取图书列表，一个用于控制翻转卡片页面
+import { storeShelfMixin, storeHomeMixin } from '../../utils/mixin'
+import { getBookShelf, saveBookShelf } from '../../utils/localStorage'
+import { removeFromBookShelf, addToShelf } from '../../utils/store'
 import Epub from 'epubjs'
 
 global.ePub = Epub
 
 export default {
-  mixins: [storeHomeMixin],
+  mixins: [storeShelfMixin, storeHomeMixin],
   components: {
     DetailTitle,
     Scroll,
@@ -124,12 +128,18 @@ export default {
     author() {
       return this.metadata ? this.metadata.creator : ''
     },
+    // 判断是否处于书架,设为计算属性是因为在多个地方调用该方法，计算属性能提高代码效率
     inBookShelf() {
-      if (this.bookItem && this.bookShelf) {
+      // 如果如果当前有图书存在，且图书列表中有内容
+      if (this.bookItem && this.shelfList) {
+        // 那么对图书列表进行扁平化(扁平化是为了同时取出分组中所有的图书)
+        // 扁平化之后，挑选类型为1的元素（即保证都是图书）保存到变量中
         const flatShelf = (function flatten(arr) {
           return [].concat(...arr.map(v => v.itemList ? [v, ...flatten(v.itemList)] : v))
-        })(this.bookShelf).filter(item => item.type === 1)
+        })(this.shelfList).filter(item => item.type === 1)
+        // 将数组变量中的图书与当前图书名称相等的图书再次过滤出来并保存在book中
         const book = flatShelf.filter(item => item.fileName === this.bookItem.fileName)
+        // 如果book存在，并且长度大于0，则证明本身在书架中以存在，返回true,反之证明不存在返回false
         return book && book.length > 0
       } else {
         return false
@@ -156,6 +166,19 @@ export default {
   },
   methods: {
     addOrRemoveShelf() {
+      // 如果图书处于书架
+      if (this.inBookShelf) {
+        // 删除书架的内容(store.js中的方法)，用返回得数组更新vuex
+        this.setShelfList(removeFromBookShelf(this.bookItem)).then(() => {
+          // 更新完毕后保存到本地存储
+          saveBookShelf(this.shelfList)
+        })
+      } else {
+        // 添加到书架(store.js中的方法)
+        addToShelf(this.bookItem)
+        // 通过本地存储中的数据，更新vuex
+        this.setShelfList(getBookShelf())
+      }
     },
     showToast(text) {
       // 将得到的错误信息赋给toastText，该变量之后会通过props传入消息框组件
@@ -165,7 +188,7 @@ export default {
     },
     readBook() {
       this.$router.push({
-        path: `/ebook/${this.categoryText}|${this.fileName}`
+        path: `/ebook/${this.bookItem.categoryText}|${this.fileName}`
       })
     },
     // （trialListening)试听 跳转到听书页
@@ -195,7 +218,7 @@ export default {
     },
     read(item) {
       this.$router.push({
-        path: `/ebook/${this.categoryText}|${this.fileName}`
+        path: `/ebook/${this.bookItem.categoryText}|${this.fileName}`
       })
     },
     itemStyle(item) {
@@ -299,6 +322,15 @@ export default {
   },
   mounted() {
     this.init()
+    // 通过打印shelfList可以发现，如果没有加载过书架相关页面的或者进入过书架但在其余页面又进行了刷新操作，
+    // 那么就不能正确获取到shelfList的值（这时获取到的是一般为空数组），原因是shelfList默认就是空数组，他在书架相关页面中
+    // 会通过请求方法对，对vuex中的shelfList进行赋值，从而更新shelfList，而在其他页面中首次加载不会赋值，所以在添加图书时，
+    // 就可能会出现一本书会添加多次的情况（比如添加一次后，刷新详情页，数组为空，于是又可以添加）
+    // console.log(this.shelfList) // []
+    // 所以通过在mounted中判断如果为空，则调用混入中的方法，获取shelfList
+    if (!this.shelfList || this.shelfList.length === 0) {
+      this.getShelfList()
+    }
   }
 }
 </script>
