@@ -8,8 +8,14 @@ import i18n from './lang'
 // import './mock'
 import './utils/boost'
 import './utils/create-api'
+import VueLazyLoad from 'vue-lazyload'
 
 Vue.config.productionTip = false
+
+Vue.use(VueLazyLoad, {
+  loading: require('./assets/images/placeholder.png'),
+  attempt: 1
+})
 
 new Vue({
   router,
