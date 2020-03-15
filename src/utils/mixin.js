@@ -24,7 +24,8 @@ export const storeShelfMixin = {
       'setShelfTitleVisible',
       'setOffsetY',
       'setShelfCategory',
-      'setCurrentType'
+      'setCurrentType',
+      'setFlipCardVisible'
     ]),
     // 展示电子书详情页面
     showBookDetail(book) {
@@ -175,7 +176,8 @@ const mixin = {
       'setMetadata',
       'setNavigation',
       'setOffsetY',
-      'setIsBookmark'
+      'setIsBookmark',
+      'setFlipCardVisible'
     ]),
     initGlobalStyle() {
       removeAllCss()

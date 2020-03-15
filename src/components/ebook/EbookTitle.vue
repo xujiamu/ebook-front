@@ -35,6 +35,7 @@ export default {
     },
     goStoreHome() {
       this.$router.push('/store/home')
+      this.setFlipCardVisible(false)
     }
   }
 }

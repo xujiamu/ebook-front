@@ -79,6 +79,8 @@ export default {
         } else {
           // 如果type为3 跳转到书城首页，this为vue实例
           gotoStoreHome(this)
+          // 关闭翻转卡片
+          this.setFlipCardVisible(false)
         }
       }
     }

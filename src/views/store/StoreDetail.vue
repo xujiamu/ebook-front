@@ -83,7 +83,8 @@ import { detail } from '../../api/store'
 import { px2rem, realPx } from '../../utils/utils'
 import { getLocalForage } from '../../utils/localForage'
 // 这里使用了两个混入一个用于获取图书列表，一个用于控制翻转卡片页面
-import { storeShelfMixin, storeHomeMixin } from '../../utils/mixin'
+// 最新： 使用一个混入即可，翻转卡片的方法，在storeShelfMixin里面也注册了，所以可以省略为一个混入
+import { storeShelfMixin } from '../../utils/mixin'
 import { getBookShelf, saveBookShelf } from '../../utils/localStorage'
 import { removeFromBookShelf, addToShelf } from '../../utils/store'
 import Epub from 'epubjs'
@@ -91,7 +92,7 @@ import Epub from 'epubjs'
 global.ePub = Epub
 
 export default {
-  mixins: [storeShelfMixin, storeHomeMixin],
+  mixins: [storeShelfMixin],
   components: {
     DetailTitle,
     Scroll,
